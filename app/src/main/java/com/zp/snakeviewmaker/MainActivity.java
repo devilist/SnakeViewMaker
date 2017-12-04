@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageView.setOnClickListener(this);
         relativeLayout.setOnClickListener(this);
 
+        snakeViewMaker = new SnakeViewMaker(MainActivity.this);
+        snakeViewMaker1 = new SnakeViewMaker(MainActivity.this);
+
         String url = "https://moneycp.oss-cn-hangzhou.aliyuncs.com/image/9b4c3036ca5636e8961bb43a408ca53b.jpg";
         Glide.with(this).load(url).asBitmap()
                 .transform(new RoundTransformation(this))
@@ -44,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     protected void setResource(Bitmap resource) {
                         super.setResource(resource);
-                        snakeViewMaker = new SnakeViewMaker(MainActivity.this);
                         snakeViewMaker.addTargetView(imageView)
                                 .attachToRootLayout((ViewGroup) findViewById(R.id.root));
                     }
@@ -55,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     protected void setResource(Bitmap resource) {
                         super.setResource(resource);
-                        snakeViewMaker1 = new SnakeViewMaker(MainActivity.this);
                         snakeViewMaker1.addTargetView(relativeLayout)
                                 .attachToRootLayout((ViewGroup) findViewById(R.id.root));
                     }

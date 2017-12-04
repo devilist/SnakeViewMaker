@@ -33,4 +33,19 @@
 
 # 注意事项
 
-目前不支持LinearLayout根布局
+    1.目前不支持LinearLayout根布局
+    2.本地图片可直接调用。网络图片需要在图片加载完成后才能调用，不然可能出现绑定不成功的情况
+    例如，用glide加载网络图片时，调用时机如下：
+
+```
+    snakeViewMaker = new SnakeViewMaker(MainActivity.this);
+    Glide.with(this).load(url).asBitmap()
+                    .into(new BitmapImageViewTarget(imageView) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            super.setResource(resource);
+                            snakeViewMaker.addTargetView(imageView)
+                                    .attachToRootLayout((ViewGroup) findViewById(R.id.root));
+                        }
+                    });
+```
