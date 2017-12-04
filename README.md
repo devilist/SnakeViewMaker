@@ -30,3 +30,7 @@
     snakeViewMaker.setClickable(true);           // 控制可点击
     snakeViewMaker.setEnabled(true);             // 控制可触摸
 ```
+
+# 注意事项
+
+目前不支持LinearLayout根布局
