@@ -4,7 +4,8 @@
 
 ![image](https://github.com/devilist/SnakeViewMaker/raw/master/images/snake_shootcut.gif)
 
-#调用方法：
+# 调用方法：
+
 1.创建 SnakeViewMaker；
 
 ```
