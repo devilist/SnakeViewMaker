@@ -197,6 +197,9 @@ public class SnakeViewMaker implements View.OnTouchListener {
     private void updateChildrenPosition() {
         updateTargetViewLocation();
         for (View child : mChildren) {
+            if (mTargetLocation[0] == child.getTranslationX()
+                    && mTargetLocation[1] == child.getTranslationY())
+                break;
             child.setTranslationX(mTargetLocation[0]);
             child.setTranslationY(mTargetLocation[1]);
             child.requestLayout();
