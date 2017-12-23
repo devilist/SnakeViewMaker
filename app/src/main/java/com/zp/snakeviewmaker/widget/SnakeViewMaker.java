@@ -77,6 +77,13 @@ public class SnakeViewMaker implements View.OnTouchListener {
         return this;
     }
 
+    public void attachToRootLayout() {
+        ViewGroup viewGroup = null;
+        if (mContext instanceof Activity)
+            viewGroup = ((Activity) mContext).findViewById(android.R.id.content);
+        attachToRootLayout(viewGroup);
+    }
+
     public void attachToRootLayout(ViewGroup attach) {
         if (attach instanceof LinearLayout) {
             Log.e("SnakeViewMaker", "view parent can not be LinearLayout!");
@@ -95,7 +102,7 @@ public class SnakeViewMaker implements View.OnTouchListener {
                                     Log.d("SnakeViewMaker", "hasFocus " + hasFocus);
                                     if (hasFocus) {
                                         mTargetView.getViewTreeObserver().removeOnWindowFocusChangeListener(this);
-                                        // width height bitmap cache
+                                        // mScreenWidth height bitmap cache
                                         updateTargetViewCache();
                                         // attach child as soon as the target view drawing finished
                                         attachToRootLayoutInternal();
@@ -162,6 +169,9 @@ public class SnakeViewMaker implements View.OnTouchListener {
             mShieldView.setBackgroundColor(Resources.getSystem().getColor(android.R.color.transparent));
             mShieldView.setClickable(true);
             mShieldView.setFocusableInTouchMode(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mShieldView.setElevation(mTargetView.getElevation());
+            }
         }
         mAttachViewGroup.addView(mShieldView);
         mShieldView.setVisibility(View.GONE);
@@ -182,6 +192,9 @@ public class SnakeViewMaker implements View.OnTouchListener {
             mChildren.add(child_i);
             if (i == mChildCount - 1) {
                 child_i.setOnTouchListener(this);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    child_i.setElevation(mTargetView.getElevation());
+                }
                 // onClick event
                 child_i.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -206,7 +219,13 @@ public class SnakeViewMaker implements View.OnTouchListener {
         }
     }
 
+    public void updateLocation() {
+        if (null == mTargetView) return;
+        updateChildrenPosition();
+    }
+
     public void updateSnakeImage() {
+        if (null == mTargetView) return;
         updateTargetViewCache();
         for (ImageView child : mChildren) {
             child.setImageBitmap(mTargetBitmap);
@@ -215,6 +234,7 @@ public class SnakeViewMaker implements View.OnTouchListener {
     }
 
     public void detachSnake() {
+        if (null == mTargetView) return;
         mTargetView.setVisibility(View.VISIBLE);
         if (null != mAttachViewGroup) {
             if (null != mShieldView) {
@@ -238,7 +258,7 @@ public class SnakeViewMaker implements View.OnTouchListener {
             updateTargetViewLocation();
             mShieldView.setVisibility(mShieldEnabled ? View.VISIBLE : View.GONE);
         } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            if (event.getEventTime() - event.getDownTime() >= 100) {
+            if (event.getEventTime() - event.getDownTime() >= 150) {
                 float accX = 0;
                 float accY = 0;
                 if (mVelocityTracker != null) {
@@ -257,7 +277,7 @@ public class SnakeViewMaker implements View.OnTouchListener {
 
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
             mChildren.get(mChildCount - 1).setClickable(true);
-            if (event.getEventTime() - event.getDownTime() < 100) {
+            if (event.getEventTime() - event.getDownTime() < 150) {
                 mShieldView.setVisibility(View.GONE);
                 return false;
             } else {
@@ -348,6 +368,7 @@ public class SnakeViewMaker implements View.OnTouchListener {
     }
 
     public void setVisibility(int visibility) {
+        if (null == mTargetView) return;
         if (!mChildren.isEmpty()) {
             for (View child : mChildren)
                 child.setVisibility(visibility);
@@ -355,12 +376,14 @@ public class SnakeViewMaker implements View.OnTouchListener {
     }
 
     public void setClickable(boolean clickable) {
+        if (null == mTargetView) return;
         if (!mChildren.isEmpty()) {
             mChildren.get(mChildCount - 1).setClickable(clickable);
         }
     }
 
     public void setEnabled(boolean enabled) {
+        if (null == mTargetView) return;
         if (!mChildren.isEmpty()) {
             mChildren.get(mChildCount - 1).setEnabled(enabled);
         }
